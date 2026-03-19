@@ -1,0 +1,66 @@
+NestKH — Full Project Checklist
+=================================
+
+PHASE 1 — Backend Setup
+------------------------
+[ ] Set up FastAPI project
+[ ] Connect to PostgreSQL
+[ ] Define database tables (listings, users, enquiries)
+[ ] Build API endpoints (GET, POST, PUT, DELETE)
+[ ] Test with Swagger UI
+
+PHASE 2 — Auth System
+----------------------
+[ ] Admin login with hashed passwords (bcrypt)
+[ ] JWT tokens for session management
+[ ] Protect admin-only routes
+
+PHASE 3 — Frontend Rebuild
+---------------------------
+[ ] Split index.html into separate pages (index, detail, admin, login)
+[ ] Connect pages to real API using fetch
+[ ] Listings load from database (not hardcoded JS array)
+[ ] Search and filter done server-side
+
+PHASE 4 — Admin Panel
+----------------------
+[ ] Add listing → saves to database
+[ ] Edit listing → updates database
+[ ] Delete listing → removes from database
+[ ] Dashboard stats pulled from real data
+
+PHASE 5 — Image Uploads
+------------------------
+[ ] Upload real photos for each property
+[ ] Store images on server or cloud (Cloudinary free tier)
+
+PHASE 6 — Enquiry System
+-------------------------
+[ ] Enquiry form saves to database
+[ ] Admin can view all enquiries in dashboard
+
+PHASE 7 — Deploy
+-----------------
+[ ] Frontend → GitHub Pages or Netlify (free)
+[ ] Backend + DB → Render or Railway (free tier)
+[ ] Test everything end-to-end in production
+
+
+API ENDPOINTS
+-------------
+GET    /listings         - Get all listings
+GET    /listings/{id}    - Get one listing
+POST   /listings         - Add new listing (admin only)
+PUT    /listings/{id}    - Edit listing (admin only)
+DELETE /listings/{id}    - Delete listing (admin only)
+POST   /auth/login       - Admin login, returns JWT token
+POST   /enquiries        - Submit enquiry form
+GET    /enquiries        - View all enquiries (admin only)
+
+
+TECH STACK
+----------
+Frontend : Plain HTML + CSS + JavaScript
+Backend  : Python (FastAPI)
+Database : PostgreSQL
+Hosting  : Netlify (frontend) + Render/Railway (backend + DB)
