@@ -138,6 +138,17 @@
         <input type="text" id="f-facilities" placeholder="Wifi, Parking, Pool, Gym"/>
       </div>
 
+      <!-- Image upload — only shown after a listing is saved (needs an ID first) -->
+      <div class="field" id="upload-section" style="display:none;">
+        <label>Property Photo</label>
+        <div class="upload-zone" onclick="document.getElementById('f-image').click()">
+          <div id="upload-preview" style="font-size:28px;">📁</div>
+          <p id="upload-label">Click to upload a photo (JPG, PNG — max 5MB)</p>
+        </div>
+        <input type="file" id="f-image" accept="image/jpeg,image/png,image/webp"
+               style="display:none;" onchange="previewImage(this)"/>
+      </div>
+
       <div class="modal-error" id="modal-error"></div>
 
       <div class="modal-footer">

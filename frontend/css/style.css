@@ -252,6 +252,10 @@ tbody tr:hover td { background: var(--cream); }
 .btn-save { background: var(--green); color: white; border: none; padding: 10px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
 .btn-save:hover { background: var(--green-dark); }
 .modal-error { font-size: 13px; color: #E24B4A; margin-top: 8px; display: none; }
+.upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s; background: var(--cream); }
+.upload-zone:hover { border-color: var(--green); }
+.upload-zone p { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.upload-zone img { max-height: 120px; border-radius: var(--radius-sm); object-fit: cover; }
 
 /* ── FOOTER ───────────────────────────────────────── */
 footer { background: var(--ink); color: rgba(255,255,255,0.6); text-align: center; padding: 2rem; font-size: 13px; margin-top: 4rem; }

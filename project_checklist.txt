@@ -22,17 +22,19 @@ PHASE 3 — Frontend Rebuild ✓ COMPLETE
 [x] Listings load from database (not hardcoded JS array)
 [x] Search and filter done server-side (query params to API)
 
-PHASE 4 — Admin Panel
-----------------------
-[ ] Add listing → saves to database
-[ ] Edit listing → updates database
-[ ] Delete listing → removes from database
-[ ] Dashboard stats pulled from real data
+PHASE 4 — Admin Panel ✓ COMPLETE
+----------------------------------
+[x] Add listing → saves to database
+[x] Edit listing → updates database
+[x] Delete listing → removes from database
+[x] Dashboard stats pulled from real data
 
-PHASE 5 — Image Uploads
-------------------------
-[ ] Upload real photos for each property
-[ ] Store images on server or cloud (Cloudinary free tier)
+PHASE 5 — Image Uploads ✓ COMPLETE
+-------------------------------------
+[x] Upload real photos for each property
+[x] Store images on server (uploads/ folder, served as static files)
+[x] Image preview in admin modal before uploading
+[x] Old image deleted when replaced
 
 PHASE 6 — Enquiry System
 -------------------------

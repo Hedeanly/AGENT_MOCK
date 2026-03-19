@@ -3,16 +3,18 @@ routers/listings.py — All API endpoints for property listings
 
 A "router" is a group of related endpoints.
 This file handles everything to do with listings:
-  GET    /listings        → return all listings
-  GET    /listings/{id}   → return one listing
-  POST   /listings        → create a new listing (admin only)
-  PUT    /listings/{id}   → edit a listing (admin only)
-  DELETE /listings/{id}   → delete a listing (admin only)
+  GET    /listings                  → return all listings
+  GET    /listings/{id}             → return one listing
+  POST   /listings                  → create a new listing (admin only)
+  PUT    /listings/{id}             → edit a listing (admin only)
+  DELETE /listings/{id}             → delete a listing (admin only)
+  POST   /listings/{id}/upload-image → upload a photo for a listing (admin only)
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
+import os, uuid, shutil
 
 import models
 import schemas
@@ -122,3 +124,73 @@ def delete_listing(
     db.delete(listing)
     db.commit()
     # 204 means success but no data to return
+
+
+# Where uploaded images are saved on the server
+UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "..", "uploads")
+
+# Only allow these file types — prevents uploading dangerous files
+ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
+MAX_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
+
+
+@router.post("/{listing_id}/upload-image", response_model=schemas.ListingResponse)
+async def upload_image(
+    listing_id: int,
+    file: UploadFile = File(...),   # File(...) means this field is required
+    db: Session = Depends(get_db),
+    admin = Depends(get_current_admin)  # 🔒 Admin only
+):
+    """
+    Upload a photo for a listing. Admin only.
+
+    How it works:
+      1. Validate the file type and size
+      2. Give the file a unique name (uuid) to avoid conflicts
+      3. Save it to the uploads/ folder
+      4. Update the listing's image_url to point to the new file
+      5. Return the updated listing
+
+    The image is then accessible at:
+      http://localhost:8000/uploads/<filename>
+    """
+    listing = db.query(models.Listing).filter(models.Listing.id == listing_id).first()
+    if not listing:
+        raise HTTPException(status_code=404, detail="Listing not found")
+
+    # Validate file type
+    if file.content_type not in ALLOWED_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type '{file.content_type}'. Only JPEG, PNG, and WebP are allowed."
+        )
+
+    # Read the file content and check its size
+    content = await file.read()
+    if len(content) > MAX_SIZE_BYTES:
+        raise HTTPException(status_code=400, detail="File too large. Maximum size is 5MB.")
+
+    # Give the file a unique name using uuid (universally unique identifier)
+    # This prevents name collisions if two listings both upload "photo.jpg"
+    ext      = file.filename.rsplit('.', 1)[-1].lower()  # Get file extension
+    filename = f"{uuid.uuid4().hex}.{ext}"               # e.g. "a3f9c12b....jpg"
+    filepath = os.path.join(UPLOADS_DIR, filename)
+
+    # Delete the old image if one exists (keeps the uploads folder clean)
+    if listing.image_url:
+        old_filename = listing.image_url.split("/uploads/")[-1]
+        old_filepath = os.path.join(UPLOADS_DIR, old_filename)
+        if os.path.exists(old_filepath):
+            os.remove(old_filepath)
+
+    # Save the new file to disk
+    with open(filepath, "wb") as f:
+        f.write(content)
+
+    # Update the listing's image_url in the database
+    # This is the URL the frontend will use to display the image
+    listing.image_url = f"http://localhost:8000/uploads/{filename}"
+    db.commit()
+    db.refresh(listing)
+
+    return listing

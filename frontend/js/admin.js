@@ -110,11 +110,13 @@ async function loadEnquiries() {
 
 /** Open the modal in "Add" mode (empty form) */
 function openModal() {
-  document.getElementById('modal-title').textContent = 'Add New Listing';
+  document.getElementById('modal-title').textContent  = 'Add New Listing';
   document.getElementById('listing-form').reset();
-  document.getElementById('edit-id').value = '';
+  document.getElementById('edit-id').value            = '';
   document.getElementById('modal-error').style.display = 'none';
-  document.getElementById('save-btn').textContent = 'Save Listing';
+  document.getElementById('save-btn').textContent     = 'Save Listing';
+  document.getElementById('upload-section').style.display = 'none'; // Hidden until listing is saved
+  resetImagePreview();
   document.getElementById('overlay').classList.add('open');
 }
 
@@ -123,19 +125,30 @@ async function openEditModal(id) {
   try {
     const l = await api.get(`/listings/${id}`);
 
-    document.getElementById('modal-title').textContent  = 'Edit Listing';
-    document.getElementById('edit-id').value            = l.id;
-    document.getElementById('f-title').value            = l.title;
-    document.getElementById('f-price').value            = l.price;
-    document.getElementById('f-location').value         = l.location;
-    document.getElementById('f-beds').value             = l.beds;
-    document.getElementById('f-baths').value            = l.baths;
-    document.getElementById('f-sqm').value              = l.sqm;
-    document.getElementById('f-emoji').value            = l.emoji || '';
-    document.getElementById('f-desc').value             = l.description || '';
-    document.getElementById('f-facilities').value       = l.facilities || '';
+    document.getElementById('modal-title').textContent   = 'Edit Listing';
+    document.getElementById('edit-id').value             = l.id;
+    document.getElementById('f-title').value             = l.title;
+    document.getElementById('f-price').value             = l.price;
+    document.getElementById('f-location').value          = l.location;
+    document.getElementById('f-beds').value              = l.beds;
+    document.getElementById('f-baths').value             = l.baths;
+    document.getElementById('f-sqm').value               = l.sqm;
+    document.getElementById('f-emoji').value             = l.emoji || '';
+    document.getElementById('f-desc').value              = l.description || '';
+    document.getElementById('f-facilities').value        = l.facilities || '';
     document.getElementById('modal-error').style.display = 'none';
-    document.getElementById('save-btn').textContent     = 'Update Listing';
+    document.getElementById('save-btn').textContent      = 'Update Listing';
+
+    // Show the upload section for existing listings (we already have an ID)
+    document.getElementById('upload-section').style.display = 'block';
+
+    // If the listing already has an image, show a preview of it
+    if (l.image_url) {
+      document.getElementById('upload-preview').innerHTML = `<img src="${l.image_url}" style="max-height:120px;border-radius:8px;object-fit:cover;"/>`;
+      document.getElementById('upload-label').textContent = 'Click to change photo';
+    } else {
+      resetImagePreview();
+    }
 
     document.getElementById('overlay').classList.add('open');
   } catch (err) {
@@ -173,12 +186,22 @@ async function saveListing(event) {
   };
 
   try {
+    let listing;
     if (editId) {
       // Edit mode: PUT /listings/{id}
-      await api.put(`/listings/${editId}`, data);
+      listing = await api.put(`/listings/${editId}`, data);
     } else {
-      // Add mode: POST /listings/
-      await api.post('/listings/', data);
+      // Add mode: POST /listings/ — we get back the new listing with its ID
+      listing = await api.post('/listings/', data);
+      // Show the upload section now that we have an ID to attach the image to
+      document.getElementById('edit-id').value = listing.id;
+      document.getElementById('upload-section').style.display = 'block';
+    }
+
+    // If a new image file was selected, upload it now that we have the listing ID
+    const imageFile = document.getElementById('f-image').files[0];
+    if (imageFile) {
+      await uploadImage(listing.id, imageFile);
     }
 
     closeModal();
@@ -190,6 +213,51 @@ async function saveListing(event) {
     saveBtn.textContent    = editId ? 'Update Listing' : 'Save Listing';
     saveBtn.disabled       = false;
   }
+}
+
+/**
+ * Upload an image file for a listing.
+ * Uses FormData (multipart/form-data) — the standard way to send files over HTTP.
+ * Note: we bypass api.js here because file uploads need special handling.
+ */
+async function uploadImage(listingId, file) {
+  const formData = new FormData();
+  formData.append('file', file); // 'file' must match the parameter name in the backend
+
+  const token = localStorage.getItem('nestkh_token');
+  const res   = await fetch(`http://localhost:8000/listings/${listingId}/upload-image`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+    body: formData
+    // Note: do NOT set Content-Type here — the browser sets it automatically
+    //       including the required "boundary" string for multipart data
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || 'Image upload failed');
+  }
+}
+
+/** Show a preview of the selected image before uploading */
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader(); // FileReader reads local files in the browser
+  reader.onload = (e) => {
+    document.getElementById('upload-preview').innerHTML =
+      `<img src="${e.target.result}" style="max-height:120px;border-radius:8px;object-fit:cover;"/>`;
+    document.getElementById('upload-label').textContent = file.name;
+  };
+  reader.readAsDataURL(file); // Converts the file to a base64 data URL for preview
+}
+
+/** Reset the image upload zone back to its default state */
+function resetImagePreview() {
+  document.getElementById('upload-preview').innerHTML = '<div style="font-size:28px;">📁</div>';
+  document.getElementById('upload-label').textContent = 'Click to upload a photo (JPG, PNG — max 5MB)';
+  document.getElementById('f-image').value = '';
 }
 
 /** Delete a listing after confirmation */
