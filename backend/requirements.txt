@@ -1,7 +1,7 @@
 fastapi==0.115.0        # The web framework — handles our API routes
 uvicorn==0.30.6         # The server that runs FastAPI
 sqlalchemy==2.0.35      # Talks to the database (PostgreSQL)
-# psycopg2-binary==2.9.9  # PostgreSQL driver — uncomment this when deploying to production
+psycopg2-binary==2.9.9  # PostgreSQL driver — used in production (Render)
 pydantic==2.9.2         # Validates data coming in and out of the API
 python-jose==3.3.0      # Creates and reads JWT tokens (for admin login)
 passlib==1.7.4          # Hashes passwords so they're never stored as plain text

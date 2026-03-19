@@ -187,9 +187,10 @@ async def upload_image(
     with open(filepath, "wb") as f:
         f.write(content)
 
-    # Update the listing's image_url in the database
-    # This is the URL the frontend will use to display the image
-    listing.image_url = f"http://localhost:8000/uploads/{filename}"
+    # Build the public URL for this image
+    # In production, BASE_URL is set to the Render URL e.g. https://nestkh.onrender.com
+    base_url = os.getenv("BASE_URL", "http://localhost:8000")
+    listing.image_url = f"{base_url}/uploads/{filename}"
     db.commit()
     db.refresh(listing)
 

@@ -46,8 +46,12 @@ PHASE 6 — Enquiry System ✓ COMPLETE
 
 PHASE 7 — Deploy
 -----------------
-[ ] Frontend → GitHub Pages or Netlify (free)
-[ ] Backend + DB → Render or Railway (free tier)
+[x] All 7 local end-to-end tests passing
+[x] Backend prepared for Render (render.yaml, postgres URL fix, PORT env var)
+[x] Frontend prepared for Netlify (netlify.toml, config.js for API URL)
+[ ] Deploy backend to Render → get live URL
+[ ] Update config.js with Render URL → push to GitHub
+[ ] Deploy frontend to Netlify → get live URL
 [ ] Test everything end-to-end in production
 
 

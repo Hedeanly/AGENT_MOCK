@@ -12,9 +12,10 @@
  *   const listing  = await api.post('/listings/', { title: '...', price: 100000, ... });
  */
 
-// The URL of our FastAPI backend
-// Change this one line if the server address ever changes
-const API_BASE = 'http://localhost:8000';
+// The URL of our FastAPI backend — set in config.js
+// Local:      http://localhost:8000
+// Production: your Render URL (update config.js before deploying)
+const API_BASE = CONFIG.API_BASE;
 
 const api = {
 

@@ -1,0 +1,42 @@
+# render.yaml — Render deployment configuration
+#
+# This file tells Render.com how to build and run the NestKH backend.
+# Render reads this file automatically when you connect your GitHub repo.
+#
+# docs: https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: nestkh-api
+    runtime: python
+    rootDir: backend                          # Our backend code lives in /backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    #                                          ↑ Render sets $PORT automatically
+
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nestkh-db
+          property: connectionString          # Render fills this in from the DB below
+
+      - key: SECRET_KEY
+        generateValue: true                   # Render generates a random secret for you
+
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 60
+
+      - key: ADMIN_USERNAME
+        value: admin
+
+      - key: ADMIN_PASSWORD
+        value: admin123                       # ⚠️ Change this after first deploy!
+
+      - key: BASE_URL
+        value: https://nestkh-api.onrender.com  # Update this after Render gives you the URL
+
+databases:
+  - name: nestkh-db
+    databaseName: nestkh
+    user: nestkh
+    plan: free                                # Free tier — enough to get started

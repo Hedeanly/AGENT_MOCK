@@ -21,15 +21,20 @@ import os
 load_dotenv()
 
 # Get the database URL from .env
-# e.g. "sqlite:///./nestkh.db" means a local file called nestkh.db
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Locally:     sqlite:///./nestkh.db  (a local file)
+# On Render:   postgresql://user:pass@host/dbname  (cloud database)
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./nestkh.db")
+
+# Render's PostgreSQL URLs start with "postgres://" (old format)
+# but SQLAlchemy requires "postgresql://" — fix it automatically
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# SQLite needs check_same_thread=False; PostgreSQL doesn't need any extra args
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
 # Create the engine — this is the actual connection to the database
-# connect_args is only needed for SQLite (not PostgreSQL)
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False}  # Needed for SQLite only
-)
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 
 # SessionLocal is a factory — each time we call it, we get a new DB session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

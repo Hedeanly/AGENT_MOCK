@@ -1,0 +1,7 @@
+# netlify.toml — Netlify deployment configuration
+#
+# Tells Netlify which folder to publish as the website.
+# No build step needed — plain HTML is served directly.
+
+[build]
+  publish = "frontend"   # Serve everything inside the frontend/ folder
