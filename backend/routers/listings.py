@@ -17,6 +17,7 @@ from typing import List
 import models
 import schemas
 from database import get_db
+from routers.deps import get_current_admin  # Our auth dependency
 
 # APIRouter groups these endpoints together
 # The prefix means every route here starts with /listings
@@ -61,12 +62,15 @@ def get_listing(listing_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=schemas.ListingResponse, status_code=201)
-def create_listing(data: schemas.ListingCreate, db: Session = Depends(get_db)):
+def create_listing(
+    data: schemas.ListingCreate,
+    db: Session = Depends(get_db),
+    admin = Depends(get_current_admin)  # 🔒 Admin only — must have valid token
+):
     """
-    Create a new listing.
+    Create a new listing. Admin only.
     Expects a JSON body matching the ListingCreate schema.
     Returns the created listing with its new ID.
-    (Will be admin-only once auth is added in Phase 2)
     """
     new_listing = models.Listing(**data.model_dump())  # Convert schema to DB model
     db.add(new_listing)
@@ -76,11 +80,15 @@ def create_listing(data: schemas.ListingCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{listing_id}", response_model=schemas.ListingResponse)
-def update_listing(listing_id: int, data: schemas.ListingUpdate, db: Session = Depends(get_db)):
+def update_listing(
+    listing_id: int,
+    data: schemas.ListingUpdate,
+    db: Session = Depends(get_db),
+    admin = Depends(get_current_admin)  # 🔒 Admin only
+):
     """
-    Edit an existing listing.
+    Edit an existing listing. Admin only.
     Only updates fields that are provided — leave others unchanged.
-    (Will be admin-only once auth is added in Phase 2)
     """
     listing = db.query(models.Listing).filter(models.Listing.id == listing_id).first()
 
@@ -97,11 +105,14 @@ def update_listing(listing_id: int, data: schemas.ListingUpdate, db: Session = D
 
 
 @router.delete("/{listing_id}", status_code=204)
-def delete_listing(listing_id: int, db: Session = Depends(get_db)):
+def delete_listing(
+    listing_id: int,
+    db: Session = Depends(get_db),
+    admin = Depends(get_current_admin)  # 🔒 Admin only
+):
     """
-    Delete a listing by ID.
+    Delete a listing by ID. Admin only.
     Returns 204 (No Content) on success.
-    (Will be admin-only once auth is added in Phase 2)
     """
     listing = db.query(models.Listing).filter(models.Listing.id == listing_id).first()
 

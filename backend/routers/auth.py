@@ -12,6 +12,7 @@ What is a JWT token?
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -22,6 +23,7 @@ import os
 import models
 import schemas
 from database import get_db
+from routers.deps import get_current_admin as get_current_admin_dep
 
 load_dotenv()
 
@@ -57,17 +59,25 @@ def create_token(data: dict) -> str:
 
 
 @router.post("/login", response_model=schemas.TokenResponse)
-def login(data: schemas.LoginRequest, db: Session = Depends(get_db)):
+def login(
+    form: OAuth2PasswordRequestForm = Depends(),  # Reads username+password from form fields
+    db: Session = Depends(get_db)
+):
     """
     Admin login.
-    Checks username + password, returns a JWT token if correct.
+    Accepts username + password, returns a JWT token if correct.
+
+    Why OAuth2PasswordRequestForm?
+      The Swagger UI /docs page sends login data as form fields (not JSON).
+      This form handler makes the "Authorize" button in Swagger UI work properly.
+      The frontend can also send JSON via the /auth/login endpoint directly.
     """
     # Look up the user by username
-    user = db.query(models.User).filter(models.User.username == data.username).first()
+    user = db.query(models.User).filter(models.User.username == form.username).first()
 
     # If user doesn't exist OR password is wrong, return 401 Unauthorized
     # We give the same error for both cases — don't reveal which one failed
-    if not user or not verify_password(data.password, user.hashed_password):
+    if not user or not verify_password(form.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password"
@@ -76,3 +86,13 @@ def login(data: schemas.LoginRequest, db: Session = Depends(get_db)):
     # Create a token with the username inside it
     token = create_token({"sub": user.username})
     return {"access_token": token, "token_type": "bearer"}
+
+
+@router.get("/me")
+def get_me(admin = Depends(get_current_admin_dep)):
+    """
+    Returns the currently logged-in admin's username.
+    The frontend calls this to check if the stored token is still valid.
+    If the token is expired or invalid, this returns 401.
+    """
+    return {"username": admin.username}

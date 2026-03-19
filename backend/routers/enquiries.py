@@ -14,6 +14,7 @@ from typing import List
 import models
 import schemas
 from database import get_db
+from routers.deps import get_current_admin  # Our auth dependency
 
 router = APIRouter(prefix="/enquiries", tags=["Enquiries"])
 
@@ -37,10 +38,13 @@ def submit_enquiry(data: schemas.EnquiryCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=List[schemas.EnquiryResponse])
-def get_all_enquiries(db: Session = Depends(get_db)):
+def get_all_enquiries(
+    db: Session = Depends(get_db),
+    admin = Depends(get_current_admin)  # 🔒 Admin only
+):
     """
-    Return all enquiries.
-    Will be restricted to admin only in Phase 2.
+    Return all enquiries. Admin only.
+    Only a logged-in admin should see potential buyer contact details.
     """
     return db.query(models.Enquiry).order_by(models.Enquiry.created_at.desc()).all()
 
