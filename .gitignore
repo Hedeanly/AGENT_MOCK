@@ -1,0 +1,17 @@
+# Python virtual environment — no need to upload, others can recreate it
+backend/venv/
+
+# Secret config — never upload this
+backend/.env
+
+# SQLite database file — this is local data, not source code
+backend/*.db
+
+# Python cache files — auto-generated, not needed
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db
