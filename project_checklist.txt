@@ -9,11 +9,11 @@ PHASE 1 — Backend Setup ✓ COMPLETE
 [x] Build API endpoints (GET, POST, PUT, DELETE)
 [x] Test with Swagger UI → visit http://localhost:8000/docs
 
-PHASE 2 — Auth System
-----------------------
-[ ] Admin login with hashed passwords (bcrypt)
-[ ] JWT tokens for session management
-[ ] Protect admin-only routes
+PHASE 2 — Auth System ✓ COMPLETE
+----------------------------------
+[x] Admin login with hashed passwords (bcrypt)
+[x] JWT tokens for session management
+[x] Protect admin-only routes (POST/PUT/DELETE listings, GET enquiries)
 
 PHASE 3 — Frontend Rebuild
 ---------------------------
