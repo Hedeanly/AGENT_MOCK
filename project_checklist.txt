@@ -49,8 +49,8 @@ PHASE 7 — Deploy
 [x] All 7 local end-to-end tests passing
 [x] Backend prepared for Render (render.yaml, postgres URL fix, PORT env var)
 [x] Frontend prepared for Netlify (netlify.toml, config.js for API URL)
-[ ] Deploy backend to Render → get live URL
-[ ] Update config.js with Render URL → push to GitHub
+[ ] Deploy backend (Railway or Koyeb — skipped for now, revisit later)
+[ ] Update config.js with backend URL → push to GitHub
 [ ] Deploy frontend to Netlify → get live URL
 [ ] Test everything end-to-end in production
 
