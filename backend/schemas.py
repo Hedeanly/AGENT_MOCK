@@ -98,13 +98,14 @@ class EnquiryCreate(BaseModel):
 
 class EnquiryResponse(BaseModel):
     """What the API returns for an enquiry"""
-    id:         int
-    listing_id: int
-    name:       str
-    phone:      Optional[str]
-    email:      str
-    message:    Optional[str]
-    created_at: datetime
+    id:            int
+    listing_id:    int
+    listing_title: Optional[str] = None  # Joined from the listings table — friendlier than just an ID
+    name:          str
+    phone:         Optional[str]
+    email:         str
+    message:       Optional[str]
+    created_at:    datetime
 
     class Config:
         from_attributes = True

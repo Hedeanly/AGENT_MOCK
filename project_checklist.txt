@@ -36,10 +36,13 @@ PHASE 5 — Image Uploads ✓ COMPLETE
 [x] Image preview in admin modal before uploading
 [x] Old image deleted when replaced
 
-PHASE 6 — Enquiry System
--------------------------
-[ ] Enquiry form saves to database
-[ ] Admin can view all enquiries in dashboard
+PHASE 6 — Enquiry System ✓ COMPLETE
+-------------------------------------
+[x] Enquiry form saves to database
+[x] Admin can view all enquiries in dashboard
+[x] Property name shown instead of just an ID number
+[x] Proper date/time formatting
+[x] Admin can delete enquiries
 
 PHASE 7 — Deploy
 -----------------

@@ -81,26 +81,51 @@ async function loadEnquiries() {
     document.getElementById('stat-enquiries').textContent = enquiries.length;
 
     if (!enquiries.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">No enquiries yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No enquiries yet.</td></tr>';
       return;
     }
 
     tbody.innerHTML = enquiries.map(e => {
-      const date = new Date(e.created_at).toLocaleDateString();
+      // Format the date nicely: "19 Mar 2026, 10:45 AM"
+      const date = new Date(e.created_at).toLocaleString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+
       return `
         <tr>
           <td class="td-title">${e.name}</td>
           <td>${e.email}</td>
           <td>${e.phone || '—'}</td>
-          <td>#${e.listing_id}</td>
-          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.message || '—'}</td>
-          <td style="color:var(--muted);">${date}</td>
+          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.listing_title || ''}">
+            ${e.listing_title || `#${e.listing_id}`}
+          </td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.message || ''}">
+            ${e.message || '—'}
+          </td>
+          <td style="color:var(--muted);white-space:nowrap;">${date}</td>
+          <td>
+            <button class="btn-del" onclick="deleteEnquiry(${e.id}, '${e.name.replace(/'/g, "\\'")}')">Delete</button>
+          </td>
         </tr>
       `;
     }).join('');
 
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" style="color:#E24B4A;text-align:center;">Failed to load enquiries.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="color:#E24B4A;text-align:center;">Failed to load enquiries.</td></tr>`;
+  }
+}
+
+/** Delete an enquiry after confirmation */
+async function deleteEnquiry(id, name) {
+  const confirmed = confirm(`Delete enquiry from "${name}"?\n\nThis cannot be undone.`);
+  if (!confirmed) return;
+
+  try {
+    await api.delete(`/enquiries/${id}`);
+    loadEnquiries(); // Refresh the table
+  } catch (err) {
+    alert('Failed to delete: ' + err.message);
   }
 }
 
