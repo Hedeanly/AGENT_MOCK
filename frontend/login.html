@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login — NestKH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">Nest<span>KH</span></a>
+  <div class="nav-right">
+    <a class="nav-link" href="index.html">← Back to listings</a>
+  </div>
+</nav>
+
+<!-- LOGIN CARD -->
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Enter your credentials to manage listings</p>
+
+    <form id="login-form" onsubmit="doLogin(event)">
+      <input class="login-input" type="text"     id="username" placeholder="Username" required/>
+      <input class="login-input" type="password" id="password" placeholder="Password" required/>
+      <button class="login-btn" type="submit" id="login-btn">Login</button>
+    </form>
+
+    <div class="login-error" id="login-error">Incorrect username or password.</div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

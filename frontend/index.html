@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NestKH — Premium Properties in Cambodia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">Nest<span>KH</span></a>
+  <div class="nav-right">
+    <a class="nav-link" href="index.html">Listings</a>
+    <a class="nav-link" href="#">About</a>
+    <a class="nav-link" href="#">Contact</a>
+    <a class="nav-btn" href="login.html">Admin Panel</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Cambodia's #1 Property Platform</div>
+  <h1>Find Your Perfect<br/>Home in Cambodia</h1>
+  <p>Discover premium properties across Phnom Penh, Siem Reap, and beyond</p>
+  <div class="search-box">
+    <input type="text" id="s-text" placeholder="Search by title or keyword..." oninput="handleSearch()"/>
+    <select id="s-loc" onchange="handleSearch()">
+      <option value="">All Locations</option>
+      <option>Phnom Penh</option>
+      <option>Siem Reap</option>
+      <option>Kampot</option>
+    </select>
+    <select id="s-price" onchange="handleSearch()">
+      <option value="">Any Price</option>
+      <option value="200000">Under $200k</option>
+      <option value="350000">Under $350k</option>
+      <option value="999999">Under $500k</option>
+    </select>
+    <button class="search-btn" onclick="handleSearch()">Search</button>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Properties</div></div>
+  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Cities</div></div>
+  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Happy Buyers</div></div>
+  <div class="stat"><div class="stat-num">5★</div><div class="stat-label">Rated Service</div></div>
+</div>
+
+<!-- LISTINGS -->
+<div class="listings-wrap">
+  <div class="listings-header">
+    <div>
+      <h2>Featured Properties</h2>
+      <p id="result-label">Loading...</p>
+    </div>
+    <select class="sort-select" onchange="handleSort(this.value)">
+      <option value="">Sort: Default</option>
+      <option value="asc">Price: Low to High</option>
+      <option value="desc">Price: High to Low</option>
+    </select>
+  </div>
+
+  <!-- Cards are injected here by listings.js -->
+  <div class="grid" id="grid">
+    <div class="loading">Loading properties...</div>
+  </div>
+
+  <div class="no-results" id="no-results" style="display:none;">
+    <div class="icon">🏚️</div>
+    <p>No properties match your search. Try adjusting your filters.</p>
+  </div>
+</div>
+
+<footer><span>NestKH</span> &nbsp;·&nbsp; Premium Properties in Cambodia &nbsp;·&nbsp; © 2025</footer>
+
+<!-- Load shared API helper first, then page logic -->
+<script src="js/api.js"></script>
+<script src="js/listings.js"></script>
+</body>
+</html>

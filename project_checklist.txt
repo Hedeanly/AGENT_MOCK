@@ -15,12 +15,12 @@ PHASE 2 — Auth System ✓ COMPLETE
 [x] JWT tokens for session management
 [x] Protect admin-only routes (POST/PUT/DELETE listings, GET enquiries)
 
-PHASE 3 — Frontend Rebuild
----------------------------
-[ ] Split index.html into separate pages (index, detail, admin, login)
-[ ] Connect pages to real API using fetch
-[ ] Listings load from database (not hardcoded JS array)
-[ ] Search and filter done server-side
+PHASE 3 — Frontend Rebuild ✓ COMPLETE
+---------------------------------------
+[x] Split index.html into separate pages (index, detail, admin, login)
+[x] Connect pages to real API using fetch (via api.js helper)
+[x] Listings load from database (not hardcoded JS array)
+[x] Search and filter done server-side (query params to API)
 
 PHASE 4 — Admin Panel
 ----------------------

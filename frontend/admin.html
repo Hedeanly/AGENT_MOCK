@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — NestKH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">Nest<span>KH</span></a>
+  <div class="nav-right">
+    <a class="nav-link" href="index.html">View Site</a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- ADMIN DASHBOARD -->
+<div class="admin-wrap">
+
+  <!-- TOP BAR -->
+  <div class="admin-topbar">
+    <div>
+      <h2>Admin Dashboard</h2>
+      <p id="admin-username">Manage your property listings</p>
+    </div>
+    <button class="add-btn" onclick="openModal()">+ Add Listing</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="admin-stats">
+    <div class="astat"><div class="astat-num" id="stat-total">—</div><div class="astat-label">Total Listings</div></div>
+    <div class="astat"><div class="astat-num" id="stat-live">—</div><div class="astat-label">Live</div></div>
+    <div class="astat"><div class="astat-num" id="stat-value">—</div><div class="astat-label">Total Value</div></div>
+    <div class="astat"><div class="astat-num" id="stat-enquiries">—</div><div class="astat-label">Enquiries</div></div>
+  </div>
+
+  <!-- LISTINGS TABLE -->
+  <div class="table-wrap">
+    <div class="table-title">Listings</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Location</th>
+          <th>Price</th>
+          <th>Facilities</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="listings-tbody">
+        <tr><td colspan="6" style="text-align:center;color:var(--muted);">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ENQUIRIES TABLE -->
+  <div class="table-wrap">
+    <div class="table-title">Recent Enquiries</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Property ID</th>
+          <th>Message</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="enquiries-tbody">
+        <tr><td colspan="6" style="text-align:center;color:var(--muted);">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Add New Listing</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <form id="listing-form" onsubmit="saveListing(event)">
+      <!-- Hidden field to track which listing we're editing (empty = new) -->
+      <input type="hidden" id="edit-id"/>
+
+      <div class="field">
+        <label>Property Title</label>
+        <input type="text" id="f-title" placeholder="e.g. Modern Villa in Phnom Penh" required/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Price (USD)</label>
+          <input type="number" id="f-price" placeholder="250000" required/>
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <select id="f-location">
+            <option>Phnom Penh</option>
+            <option>Siem Reap</option>
+            <option>Kampot</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Bedrooms</label>
+          <input type="number" id="f-beds" placeholder="3" min="0" required/>
+        </div>
+        <div class="field">
+          <label>Bathrooms</label>
+          <input type="number" id="f-baths" placeholder="2" min="0" required/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Size (m²)</label>
+        <input type="number" id="f-sqm" placeholder="200" min="1" required/>
+      </div>
+      <div class="field">
+        <label>Emoji</label>
+        <input type="text" id="f-emoji" placeholder="🏡" maxlength="4"/>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="f-desc" rows="3" placeholder="Describe the property..."></textarea>
+      </div>
+      <div class="field">
+        <label>Facilities (comma separated)</label>
+        <input type="text" id="f-facilities" placeholder="Wifi, Parking, Pool, Gym"/>
+      </div>
+
+      <div class="modal-error" id="modal-error"></div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-save" id="save-btn">Save Listing</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
