@@ -8,5 +8,5 @@
  * Production:  https://agendcs-api.onrender.com  ← replace with your actual URL
  */
 const CONFIG = {
-  API_BASE: 'http://localhost:8000'
+  API_BASE: 'https://agent-mock.onrender.com'
 };
