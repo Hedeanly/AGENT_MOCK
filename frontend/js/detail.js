@@ -23,7 +23,7 @@ async function init() {
     // Fetch this one listing from the API
     const listing = await api.get(`/listings/${id}`);
     renderDetail(listing);
-    document.title = `${listing.title} — NestKH`;
+    document.title = `${listing.title} — agendCS`;
   } catch (err) {
     document.getElementById('detail-wrap').innerHTML =
       '<div class="loading">Property not found. <a href="index.html">← Back to listings</a></div>';
@@ -57,8 +57,8 @@ function renderDetail(l) {
       <!-- LEFT: property info -->
       <div class="detail-info">
         <div class="detail-price-row">
-          <div class="detail-price">${fmt(l.price)}</div>
-          <span class="card-tag">For Sale</span>
+          <div class="detail-price">${fmt(l.price)}${l.listing_type === 'rent' ? '<span style="font-size:16px;font-weight:400;"> /mo</span>' : ''}</div>
+          <span class="card-tag">${l.listing_type === 'rent' ? 'For Rent' : 'For Sale'}</span>
         </div>
         <h1>${l.title}</h1>
         <div class="detail-loc">📍 ${l.location}</div>

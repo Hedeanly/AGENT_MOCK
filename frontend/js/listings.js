@@ -40,6 +40,9 @@ async function loadListings() {
       location:  document.getElementById('s-loc').value,
       max_price: document.getElementById('s-price').value,
     };
+    if (typeof activeType !== 'undefined' && activeType !== 'all') {
+      params.listing_type = activeType;
+    }
 
     // Fetch from GET /listings/?location=...&max_price=...
     const listings = await api.get('/listings/', params);
@@ -92,12 +95,12 @@ function renderGrid(listings) {
         <div class="card-img" style="${bg}">
           ${!l.image_url ? `<div style="font-size:72px;position:relative;z-index:1;">${l.emoji || '🏠'}</div>` : ''}
           <div class="img-overlay"></div>
-          <div class="card-badge">For Sale</div>
+          <div class="card-badge">${l.listing_type === 'rent' ? 'For Rent' : 'For Sale'}</div>
           <div class="card-fav">🤍</div>
         </div>
         <div class="card-body">
           <div class="card-top">
-            <div class="card-price">${fmt(l.price)}</div>
+            <div class="card-price">${fmt(l.price)}${l.listing_type === 'rent' ? '<span style="font-size:13px;font-weight:400;"> /mo</span>' : ''}</div>
             <span class="card-tag">${l.location}</span>
           </div>
           <div class="card-title">${l.title}</div>

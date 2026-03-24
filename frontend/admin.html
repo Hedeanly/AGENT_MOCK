@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard — NestKH</title>
+  <title>Admin Dashboard — agendCS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a class="logo" href="index.html">Nest<span>KH</span></a>
+  <a class="logo" href="index.html">agend<span>CS</span></a>
   <div class="nav-right">
     <a class="nav-link" href="index.html">View Site</a>
     <button class="logout-btn" onclick="logout()">Logout</button>
@@ -95,6 +95,13 @@
       <input type="hidden" id="edit-id"/>
 
       <div class="field">
+        <label>Listing Type</label>
+        <select id="f-type">
+          <option value="rent">For Rent</option>
+          <option value="sale">For Sale</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Property Title</label>
         <input type="text" id="f-title" placeholder="e.g. Modern Villa in Phnom Penh" required/>
       </div>
@@ -138,19 +145,12 @@
         <label>Facilities (comma separated)</label>
         <input type="text" id="f-facilities" placeholder="Wifi, Parking, Pool, Gym"/>
       </div>
-
-      <!-- Image upload — only shown after a listing is saved (needs an ID first) -->
-      <div class="field" id="upload-section" style="display:none;">
-        <label>Property Photo</label>
-        <div class="upload-zone" onclick="document.getElementById('f-image').click()">
-          <div id="upload-preview" style="font-size:28px;">📁</div>
-          <p id="upload-label">Click to upload a photo (JPG, PNG — max 5MB)</p>
-        </div>
-        <input type="file" id="f-image" accept="image/jpeg,image/png,image/webp"
-               style="display:none;" onchange="previewImage(this)"/>
+      <div class="field">
+        <label>Photo (JPEG / PNG / WebP, max 5 MB)</label>
+        <input type="file" id="f-image" accept="image/jpeg,image/png,image/webp"/>
       </div>
 
-      <div class="modal-error" id="modal-error"></div>
+<div class="modal-error" id="modal-error"></div>
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>

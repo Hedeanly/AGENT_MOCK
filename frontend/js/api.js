@@ -84,6 +84,21 @@ const api = {
   },
 
   /**
+   * Upload a file (multipart/form-data POST)
+   * @param {string} path - e.g. '/listings/3/upload-image'
+   * @param {FormData} formData - must contain the file field
+   */
+  async upload(path, formData) {
+    const res = await fetch(API_BASE + path, {
+      method: 'POST',
+      headers: this._headers(),  // No Content-Type — browser sets it with boundary
+      body: formData
+    });
+
+    return this._handle(res);
+  },
+
+  /**
    * Make a DELETE request
    * @param {string} path - e.g. '/listings/3'
    */
@@ -129,7 +144,7 @@ const api = {
     // If we get a 401, the token is probably expired — send to login
     if (res.status === 401) {
       localStorage.removeItem('nestkh_token');
-      window.location.href = '/frontend/login.html';
+      window.location.href = 'login.html';
     }
 
     throw new Error(detail);

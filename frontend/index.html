@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NestKH — Premium Properties in Cambodia</title>
+  <title>agendCS — Premium Condos in Cambodia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a class="logo" href="index.html">Nest<span>KH</span></a>
+  <a class="logo" href="index.html">agend<span>CS</span></a>
   <div class="nav-right">
-    <a class="nav-link" href="index.html">Listings</a>
+    <a class="nav-link" href="index.html">Condos</a>
     <a class="nav-link" href="#">About</a>
     <a class="nav-link" href="#">Contact</a>
     <a class="nav-btn" href="login.html">Admin Panel</a>
@@ -23,9 +23,9 @@
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-tag">Cambodia's #1 Property Platform</div>
-  <h1>Find Your Perfect<br/>Home in Cambodia</h1>
-  <p>Discover premium properties across Phnom Penh, Siem Reap, and beyond</p>
+  <div class="hero-tag">Cambodia's #1 Condo Platform</div>
+  <h1>Find Your Perfect<br/>Condo in Cambodia</h1>
+  <p>Discover premium condos for rent and sale across Phnom Penh, Siem Reap, and beyond</p>
   <div class="search-box">
     <input type="text" id="s-text" placeholder="Search by title or keyword..." oninput="handleSearch()"/>
     <select id="s-loc" onchange="handleSearch()">
@@ -36,9 +36,10 @@
     </select>
     <select id="s-price" onchange="handleSearch()">
       <option value="">Any Price</option>
-      <option value="200000">Under $200k</option>
-      <option value="350000">Under $350k</option>
-      <option value="999999">Under $500k</option>
+      <option value="100">Under $100</option>
+      <option value="500">Under $500</option>
+      <option value="1000">Under $1,000</option>
+      <option value="2000">Under $2,000</option>
     </select>
     <button class="search-btn" onclick="handleSearch()">Search</button>
   </div>
@@ -46,9 +47,9 @@
 
 <!-- STATS BAR -->
 <div class="stats-bar">
-  <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Properties</div></div>
+  <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Condos</div></div>
   <div class="stat"><div class="stat-num">3</div><div class="stat-label">Cities</div></div>
-  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Happy Buyers</div></div>
+  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Happy Clients</div></div>
   <div class="stat"><div class="stat-num">5★</div><div class="stat-label">Rated Service</div></div>
 </div>
 
@@ -56,7 +57,7 @@
 <div class="listings-wrap">
   <div class="listings-header">
     <div>
-      <h2>Featured Properties</h2>
+      <h2>Featured Condos</h2>
       <p id="result-label">Loading...</p>
     </div>
     <select class="sort-select" onchange="handleSort(this.value)">
@@ -66,22 +67,38 @@
     </select>
   </div>
 
+  <!-- Rent / Sale tabs -->
+  <div class="type-tabs">
+    <button class="type-tab"        id="tab-all"  onclick="handleTypeTab('all')">All</button>
+    <button class="type-tab active" id="tab-rent" onclick="handleTypeTab('rent')">For Rent</button>
+    <button class="type-tab"        id="tab-sale" onclick="handleTypeTab('sale')">For Sale</button>
+  </div>
+
   <!-- Cards are injected here by listings.js -->
   <div class="grid" id="grid">
-    <div class="loading">Loading properties...</div>
+    <div class="loading">Loading condos...</div>
   </div>
 
   <div class="no-results" id="no-results" style="display:none;">
-    <div class="icon">🏚️</div>
-    <p>No properties match your search. Try adjusting your filters.</p>
+    <div class="icon">🏢</div>
+    <p>No condos match your search. Try adjusting your filters.</p>
   </div>
 </div>
 
-<footer><span>NestKH</span> &nbsp;·&nbsp; Premium Properties in Cambodia &nbsp;·&nbsp; © 2025</footer>
+<footer><span>agendCS</span> &nbsp;·&nbsp; Premium Condos in Cambodia &nbsp;·&nbsp; © 2025</footer>
 
 <!-- Load shared API helper first, then page logic -->
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/listings.js"></script>
+<script>
+  let activeType = 'rent';
+  function handleTypeTab(type) {
+    activeType = type;
+    document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + type).classList.add('active');
+    handleSearch();
+  }
+</script>
 </body>
 </html>

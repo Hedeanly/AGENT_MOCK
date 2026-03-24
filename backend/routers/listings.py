@@ -28,14 +28,15 @@ router = APIRouter(prefix="/listings", tags=["Listings"])
 
 @router.get("/", response_model=List[schemas.ListingResponse])
 def get_all_listings(
-    location: str = None,   # Optional filter: ?location=Phnom Penh
-    max_price: float = None, # Optional filter: ?max_price=300000
+    location:     str   = None,  # Optional filter: ?location=Phnom Penh
+    max_price:    float = None,  # Optional filter: ?max_price=300000
+    listing_type: str   = None,  # Optional filter: ?listing_type=rent
     db: Session = Depends(get_db)
 ):
     """
     Return all listings.
-    Optionally filter by location and/or max price using query parameters.
-    Example: GET /listings?location=Siem Reap&max_price=250000
+    Optionally filter by location, max price, and/or listing type.
+    Example: GET /listings?location=Siem Reap&listing_type=rent
     """
     query = db.query(models.Listing)
 
@@ -44,6 +45,9 @@ def get_all_listings(
 
     if max_price:
         query = query.filter(models.Listing.price <= max_price)
+
+    if listing_type:
+        query = query.filter(models.Listing.listing_type == listing_type)
 
     return query.all()
 

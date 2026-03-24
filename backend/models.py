@@ -31,8 +31,9 @@ class Listing(Base):
     description = Column(Text, nullable=True)                    # Long text description
     facilities  = Column(String(500), nullable=True)             # Comma-separated: "Wifi,Pool,Gym"
     emoji       = Column(String(10), nullable=True)              # Display emoji e.g. 🏡
-    image_url   = Column(String(500), nullable=True)             # Path to uploaded image
-    created_at  = Column(DateTime, server_default=func.now())    # Auto-set when created
+    image_url    = Column(String(500), nullable=True)            # Path to uploaded image
+    listing_type = Column(String(10), nullable=True, default="sale")  # "rent" or "sale"
+    created_at   = Column(DateTime, server_default=func.now())   # Auto-set when created
 
 
 class User(Base):
