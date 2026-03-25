@@ -267,6 +267,28 @@ tbody tr:hover td { background: var(--cream); }
 .upload-zone p { font-size: 13px; color: var(--muted); margin-top: 6px; }
 .upload-zone img { max-height: 120px; border-radius: var(--radius-sm); object-fit: cover; }
 
+/* ── LISTINGS MAP ─────────────────────────────────── */
+.map-section {
+  padding: 2.5rem 2.5rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.map-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.map-section-header h2 { font-size: 22px; font-weight: 700; }
+.map-section-header p  { font-size: 13px; color: var(--muted); margin-top: 4px; }
+#listings-map {
+  height: 440px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+}
+
 /* ── FOOTER ───────────────────────────────────────── */
 footer { background: var(--ink); color: rgba(255,255,255,0.6); text-align: center; padding: 2rem; font-size: 13px; margin-top: 4rem; }
 footer span { color: var(--green); font-family: 'Montserrat', sans-serif; font-size: 16px; }

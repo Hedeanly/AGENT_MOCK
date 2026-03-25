@@ -15,8 +15,74 @@
 // Keep a copy of all fetched listings so sorting doesn't need another API call
 let allListings = [];
 
+// ─────────────────────────────────────────────
+// LISTINGS MAP
+// ─────────────────────────────────────────────
+
+let listingsMap     = null;
+let mapMarkers      = [];
+
+/** Initialize the listings overview map (called once on page load) */
+function initListingsMap() {
+  listingsMap = L.map('listings-map', { scrollWheelZoom: false })
+                 .setView([12.5, 104.9], 7); // Cambodia overview
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(listingsMap);
+}
+
+/** Clear existing markers and add new ones for the given listings */
+function updateMapMarkers(listings) {
+  // Remove all existing markers
+  mapMarkers.forEach(m => listingsMap.removeLayer(m));
+  mapMarkers = [];
+
+  const pinned = listings.filter(l => l.latitude && l.longitude);
+
+  // Update the map label
+  const mapLabel = document.getElementById('map-label');
+  if (pinned.length === 0) {
+    mapLabel.textContent = 'No pinned properties match your current filters';
+    return;
+  }
+  mapLabel.textContent = `Showing ${pinned.length} pinned propert${pinned.length === 1 ? 'y' : 'ies'} on map`;
+
+  pinned.forEach(l => {
+    const bg = l.image_url
+      ? `<img src="${l.image_url}" style="width:100%;height:90px;object-fit:cover;border-radius:6px;margin-bottom:8px;"/>`
+      : '';
+    const price = l.listing_type === 'rent'
+      ? `${fmt(l.price)}<span style="font-weight:400;font-size:12px;"> /mo</span>`
+      : fmt(l.price);
+
+    const popup = `
+      <div style="min-width:200px;font-family:'Montserrat',sans-serif;">
+        ${bg}
+        <div style="font-weight:600;font-size:14px;margin-bottom:4px;">${l.title}</div>
+        <div style="font-size:15px;font-weight:700;color:#B8870E;margin-bottom:4px;">${price}</div>
+        <div style="font-size:12px;color:#6B6B6B;margin-bottom:6px;">📍 ${l.location} &nbsp;·&nbsp; 🛏 ${l.beds} &nbsp;·&nbsp; 🚿 ${l.baths} &nbsp;·&nbsp; 📐 ${l.sqm}m²</div>
+        <a href="detail.html?id=${l.id}" style="display:inline-block;background:#B8870E;color:white;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;text-decoration:none;">View Details →</a>
+      </div>
+    `;
+
+    const marker = L.marker([l.latitude, l.longitude])
+      .addTo(listingsMap)
+      .bindPopup(popup, { maxWidth: 240 });
+
+    mapMarkers.push(marker);
+  });
+
+  // Fit map to show all markers
+  if (mapMarkers.length > 0) {
+    const group = L.featureGroup(mapMarkers);
+    listingsMap.fitBounds(group.getBounds().pad(0.2));
+  }
+}
+
 /** Called once when the page loads */
 async function init() {
+  initListingsMap();
   await loadListings();
 }
 
@@ -60,6 +126,7 @@ async function loadListings() {
     label.textContent = `Showing ${allListings.length} propert${allListings.length === 1 ? 'y' : 'ies'}`;
 
     renderGrid(allListings);
+    updateMapMarkers(allListings);
 
   } catch (err) {
     grid.innerHTML = `<div class="loading">Failed to load listings. Is the backend running?</div>`;
@@ -130,12 +197,14 @@ function handleSearch() {
 function handleSort(dir) {
   if (!dir) {
     renderGrid(allListings);
+    updateMapMarkers(allListings);
     return;
   }
   const sorted = [...allListings].sort((a, b) =>
     dir === 'asc' ? a.price - b.price : b.price - a.price
   );
   renderGrid(sorted);
+  updateMapMarkers(sorted);
 }
 
 // Start when the page loads
