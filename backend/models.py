@@ -33,6 +33,8 @@ class Listing(Base):
     emoji       = Column(String(10), nullable=True)              # Display emoji e.g. 🏡
     image_url    = Column(String(500), nullable=True)            # Path to uploaded image
     listing_type = Column(String(10), nullable=True, default="sale")  # "rent" or "sale"
+    latitude     = Column(Float, nullable=True)                      # GPS latitude
+    longitude    = Column(Float, nullable=True)                      # GPS longitude
     created_at   = Column(DateTime, server_default=func.now())   # Auto-set when created
 
 

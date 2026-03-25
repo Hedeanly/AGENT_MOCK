@@ -81,6 +81,11 @@ function renderDetail(l) {
             </div>
           `).join('')}
         </div>
+
+        ${l.latitude && l.longitude ? `
+        <div class="section-title">Location on Map</div>
+        <div id="property-map" style="height:320px;border-radius:12px;overflow:hidden;border:1px solid #2a2a2a;margin-bottom:2rem;"></div>
+        ` : ''}
       </div>
 
       <!-- RIGHT: enquiry form -->
@@ -109,6 +114,19 @@ function renderDetail(l) {
 
     </div>
   `;
+
+  // Initialize the map after HTML is in the DOM
+  if (l.latitude && l.longitude) {
+    const map = L.map('property-map', { scrollWheelZoom: false })
+                 .setView([l.latitude, l.longitude], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    L.marker([l.latitude, l.longitude])
+      .addTo(map)
+      .bindPopup(`<strong>${l.title}</strong><br>📍 ${l.location}`)
+      .openPopup();
+  }
 }
 
 /** Handle the enquiry form submission */

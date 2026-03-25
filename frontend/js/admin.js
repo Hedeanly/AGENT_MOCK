@@ -10,7 +10,73 @@
  *   - Listings table with Edit and Delete buttons
  *   - Add/Edit modal form (same form, different behaviour)
  *   - Enquiries table
+ *   - Map picker (Leaflet + OpenStreetMap) for pinning property location
  */
+
+// ─────────────────────────────────────────────
+// MAP PICKER
+// ─────────────────────────────────────────────
+
+let pickerMap    = null;
+let pickerMarker = null;
+
+/** Initialize (or reuse) the Leaflet map inside the modal */
+function initPickerMap(lat, lng) {
+  const DEFAULT_LAT = 11.5564, DEFAULT_LNG = 104.9282; // Phnom Penh
+
+  if (!pickerMap) {
+    pickerMap = L.map('picker-map').setView([DEFAULT_LAT, DEFAULT_LNG], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(pickerMap);
+
+    // Click on map → place / move pin
+    pickerMap.on('click', (e) => {
+      setPickerPin(e.latlng.lat, e.latlng.lng);
+    });
+  }
+
+  // Wait for the modal animation to finish before resizing the map
+  setTimeout(() => {
+    pickerMap.invalidateSize();
+
+    if (lat && lng) {
+      setPickerPin(lat, lng);
+      pickerMap.setView([lat, lng], 14);
+    } else {
+      if (pickerMarker) {
+        pickerMap.removeLayer(pickerMarker);
+        pickerMarker = null;
+      }
+      document.getElementById('f-lat').value = '';
+      document.getElementById('f-lng').value = '';
+      document.getElementById('picker-coords').textContent = 'Click the map to pin the property location';
+      pickerMap.setView([DEFAULT_LAT, DEFAULT_LNG], 7);
+    }
+  }, 150);
+}
+
+/** Place or move the draggable pin */
+function setPickerPin(lat, lng) {
+  if (pickerMarker) {
+    pickerMarker.setLatLng([lat, lng]);
+  } else {
+    pickerMarker = L.marker([lat, lng], { draggable: true }).addTo(pickerMap);
+    pickerMarker.on('dragend', (e) => {
+      const pos = e.target.getLatLng();
+      updatePickerCoords(pos.lat, pos.lng);
+    });
+  }
+  updatePickerCoords(lat, lng);
+}
+
+/** Write lat/lng to hidden inputs and show coordinates */
+function updatePickerCoords(lat, lng) {
+  document.getElementById('f-lat').value = lat.toFixed(6);
+  document.getElementById('f-lng').value = lng.toFixed(6);
+  document.getElementById('picker-coords').textContent =
+    `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)} — drag pin to adjust`;
+}
 
 async function init() {
   // Check auth before showing anything — redirects to login if not logged in
@@ -142,6 +208,7 @@ function openModal() {
   document.getElementById('modal-error').style.display = 'none';
   document.getElementById('save-btn').textContent      = 'Save Listing';
   document.getElementById('overlay').classList.add('open');
+  initPickerMap(null, null);
 }
 
 /** Open the modal in "Edit" mode (pre-filled with existing data) */
@@ -164,6 +231,7 @@ async function openEditModal(id) {
     document.getElementById('modal-error').style.display = 'none';
     document.getElementById('save-btn').textContent      = 'Update Listing';
     document.getElementById('overlay').classList.add('open');
+    initPickerMap(l.latitude, l.longitude);
   } catch (err) {
     alert('Failed to load listing: ' + err.message);
   }
@@ -186,6 +254,8 @@ async function saveListing(event) {
   errorDiv.style.display = 'none';
 
   // Collect all form values
+  const latVal = document.getElementById('f-lat').value;
+  const lngVal = document.getElementById('f-lng').value;
   const data = {
     listing_type: document.getElementById('f-type').value,
     title:        document.getElementById('f-title').value,
@@ -197,6 +267,8 @@ async function saveListing(event) {
     emoji:        document.getElementById('f-emoji').value || '🏠',
     description:  document.getElementById('f-desc').value,
     facilities:   document.getElementById('f-facilities').value,
+    latitude:     latVal ? parseFloat(latVal) : null,
+    longitude:    lngVal ? parseFloat(lngVal) : null,
   };
 
   try {

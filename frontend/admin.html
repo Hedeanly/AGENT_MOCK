@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 </head>
 <body>
 
@@ -149,6 +150,13 @@
         <label>Photo (JPEG / PNG / WebP, max 5 MB)</label>
         <input type="file" id="f-image" accept="image/jpeg,image/png,image/webp"/>
       </div>
+      <div class="field">
+        <label>Pin Location on Map <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+        <div id="picker-coords" style="font-size:13px;color:var(--muted);margin-bottom:8px;">Click the map to pin the property location</div>
+        <div id="picker-map" style="height:260px;border-radius:10px;overflow:hidden;border:1px solid #2a2a2a;"></div>
+        <input type="hidden" id="f-lat"/>
+        <input type="hidden" id="f-lng"/>
+      </div>
 
 <div class="modal-error" id="modal-error"></div>
 
@@ -160,6 +168,7 @@
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/auth.js"></script>

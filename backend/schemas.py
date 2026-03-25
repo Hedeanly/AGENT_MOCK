@@ -30,10 +30,12 @@ class ListingCreate(BaseModel):
     beds:         int
     baths:        int
     sqm:          int
-    description:  Optional[str] = None
-    facilities:   Optional[str] = None   # e.g. "Wifi,Pool,Gym"
-    emoji:        Optional[str] = "🏠"
-    listing_type: Optional[str] = "sale"  # "rent" or "sale"
+    description:  Optional[str]   = None
+    facilities:   Optional[str]   = None   # e.g. "Wifi,Pool,Gym"
+    emoji:        Optional[str]   = "🏠"
+    listing_type: Optional[str]   = "sale"  # "rent" or "sale"
+    latitude:     Optional[float] = None
+    longitude:    Optional[float] = None
 
 
 class ListingUpdate(BaseModel):
@@ -48,6 +50,8 @@ class ListingUpdate(BaseModel):
     facilities:   Optional[str]   = None
     emoji:        Optional[str]   = None
     listing_type: Optional[str]   = None
+    latitude:     Optional[float] = None
+    longitude:    Optional[float] = None
 
 
 class ListingResponse(BaseModel):
@@ -64,6 +68,8 @@ class ListingResponse(BaseModel):
     emoji:        Optional[str]
     image_url:    Optional[str]
     listing_type: Optional[str]
+    latitude:     Optional[float]
+    longitude:    Optional[float]
     created_at:   datetime
 
     class Config:
