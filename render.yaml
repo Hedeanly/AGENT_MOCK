@@ -36,6 +36,15 @@ services:
       - key: BASE_URL
         value: https://nestkh-api.onrender.com  # Update this after Render gives you the URL
 
+      # Cloudinary — get these from cloudinary.com > Dashboard
+      # Set these manually in the Render dashboard (Environment tab) — don't commit real values
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
 databases:
   - name: nestkh-db
     databaseName: nestkh

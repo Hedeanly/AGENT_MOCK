@@ -14,12 +14,19 @@ This file handles everything to do with listings:
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
-import os, uuid, shutil
+import os, cloudinary, cloudinary.uploader
 
 import models
 import schemas
 from database import get_db
 from routers.deps import get_current_admin  # Our auth dependency
+
+# Configure Cloudinary from environment variables
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+)
 
 # APIRouter groups these endpoints together
 # The prefix means every route here starts with /listings
@@ -130,9 +137,6 @@ def delete_listing(
     # 204 means success but no data to return
 
 
-# Where uploaded images are saved on the server
-UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "..", "uploads")
-
 # Only allow these file types — prevents uploading dangerous files
 ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
 MAX_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -150,13 +154,13 @@ async def upload_image(
 
     How it works:
       1. Validate the file type and size
-      2. Give the file a unique name (uuid) to avoid conflicts
-      3. Save it to the uploads/ folder
-      4. Update the listing's image_url to point to the new file
-      5. Return the updated listing
+      2. Upload to Cloudinary using the listing ID as the public_id
+         (overwrite=True means re-uploading automatically replaces the old image)
+      3. Save the returned Cloudinary URL to the listing
+      4. Return the updated listing
 
-    The image is then accessible at:
-      http://localhost:8000/uploads/<filename>
+    Images are stored permanently on Cloudinary — they survive server restarts
+    and redeploys unlike local disk storage.
     """
     listing = db.query(models.Listing).filter(models.Listing.id == listing_id).first()
     if not listing:
@@ -174,27 +178,18 @@ async def upload_image(
     if len(content) > MAX_SIZE_BYTES:
         raise HTTPException(status_code=400, detail="File too large. Maximum size is 5MB.")
 
-    # Give the file a unique name using uuid (universally unique identifier)
-    # This prevents name collisions if two listings both upload "photo.jpg"
-    ext      = file.filename.rsplit('.', 1)[-1].lower()  # Get file extension
-    filename = f"{uuid.uuid4().hex}.{ext}"               # e.g. "a3f9c12b....jpg"
-    filepath = os.path.join(UPLOADS_DIR, filename)
+    # Upload to Cloudinary
+    # public_id uses the listing ID so each listing has one image slot on Cloudinary.
+    # overwrite=True means uploading a new image automatically replaces the old one.
+    result = cloudinary.uploader.upload(
+        content,
+        public_id=f"nestkh/listing_{listing_id}",
+        overwrite=True,
+        resource_type="image"
+    )
 
-    # Delete the old image if one exists (keeps the uploads folder clean)
-    if listing.image_url:
-        old_filename = listing.image_url.split("/uploads/")[-1]
-        old_filepath = os.path.join(UPLOADS_DIR, old_filename)
-        if os.path.exists(old_filepath):
-            os.remove(old_filepath)
-
-    # Save the new file to disk
-    with open(filepath, "wb") as f:
-        f.write(content)
-
-    # Build the public URL for this image
-    # In production, BASE_URL is set to the Render URL e.g. https://nestkh.onrender.com
-    base_url = os.getenv("BASE_URL", "http://localhost:8000")
-    listing.image_url = f"{base_url}/uploads/{filename}"
+    # Cloudinary returns a permanent HTTPS URL — save it to the database
+    listing.image_url = result["secure_url"]
     db.commit()
     db.refresh(listing)
 

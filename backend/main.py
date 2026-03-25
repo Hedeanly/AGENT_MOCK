@@ -16,7 +16,6 @@ Then visit:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import os
 
 from database import engine, Base, SessionLocal
@@ -56,17 +55,6 @@ app.add_middleware(
 app.include_router(listings.router)
 app.include_router(auth.router)
 app.include_router(enquiries.router)
-
-# ─────────────────────────────────────────────
-# SERVE UPLOADED IMAGES AS STATIC FILES
-# This makes uploaded images accessible at:
-#   http://localhost:8000/uploads/filename.jpg
-# FastAPI serves the files directly from the uploads/ folder.
-# ─────────────────────────────────────────────
-
-UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "uploads")
-os.makedirs(UPLOADS_DIR, exist_ok=True)  # Create the folder if it doesn't exist
-app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 # ─────────────────────────────────────────────
 # CREATE DATABASE TABLES

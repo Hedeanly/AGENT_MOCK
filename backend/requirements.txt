@@ -8,3 +8,4 @@ passlib==1.7.4          # Hashes passwords so they're never stored as plain text
 bcrypt==4.2.0           # The hashing algorithm used by passlib
 python-multipart==0.0.9 # Allows file uploads (property images)
 python-dotenv==1.0.1    # Reads secret config from a .env file
+cloudinary==1.41.0      # Cloudinary SDK — persistent cloud image storage
