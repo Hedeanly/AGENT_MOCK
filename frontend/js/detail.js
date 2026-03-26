@@ -119,8 +119,8 @@ function renderDetail(l) {
   if (l.latitude && l.longitude) {
     const map = L.map('property-map', { scrollWheelZoom: false })
                  .setView([l.latitude, l.longitude], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>'
     }).addTo(map);
     L.marker([l.latitude, l.longitude])
       .addTo(map)
