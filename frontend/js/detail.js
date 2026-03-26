@@ -88,26 +88,24 @@ function renderDetail(l) {
         ` : ''}
       </div>
 
-      <!-- RIGHT: enquiry form -->
+      <!-- RIGHT: contact card -->
       <div>
         <div class="enquiry-card">
-          <h3>Enquire Now</h3>
-          <form id="enq-form" onsubmit="submitEnquiry(event, ${l.id})">
-            <input class="enq-input" name="name"    type="text"  placeholder="Your full name"   required/>
-            <input class="enq-input" name="phone"   type="tel"   placeholder="Phone number"/>
-            <input class="enq-input" name="email"   type="email" placeholder="Email address"    required/>
-            <textarea class="enq-input" name="message" rows="3"  placeholder="I'm interested in this property..." style="resize:none;"></textarea>
-            <button class="enq-submit" type="submit">Send Enquiry</button>
-          </form>
-          <div class="enq-success" id="enq-success">
-            ✓ Enquiry sent! We'll be in touch shortly.
-          </div>
-          <div class="agent-info">
-            <div class="agent-avatar">SR</div>
+          <h3>Contact Agent</h3>
+          <div class="agent-info" style="margin-bottom: 1.5rem;">
+            <div class="agent-avatar">H</div>
             <div>
-              <div class="agent-name">Sophea Ros</div>
-              <div class="agent-role">Senior Property Consultant</div>
+              <div class="agent-name">HONG</div>
+              <div class="agent-role">Property Consultant</div>
             </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <a href="tel:+855000000000" class="enq-submit" style="text-decoration:none; text-align:center;">
+              📞 +855 000 000 000
+            </a>
+            <a href="https://t.me/yourusername" target="_blank" class="enq-submit" style="text-decoration:none; text-align:center; background:#229ED9;">
+              ✈️ Telegram
+            </a>
           </div>
         </div>
       </div>
