@@ -1,26 +1,10 @@
-"""
-schemas.py — Data validation shapes (Pydantic models)
 
-While models.py defines what the DATABASE looks like,
-schemas.py defines what the API accepts and returns.
-
-Think of schemas as forms:
-  - "Create" schemas = the form you fill in to add something
-  - "Response" schemas = what you get back after a request
-
-Pydantic automatically validates incoming data — if someone
-sends a string where a number is expected, it rejects it with
-a clear error message.
-"""
 
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
 
-# ─────────────────────────────────────────────
-# LISTING SCHEMAS
-# ─────────────────────────────────────────────
 
 class ListingCreate(BaseModel):
     """Used when CREATING a new listing (POST /listings)"""
@@ -76,10 +60,6 @@ class ListingResponse(BaseModel):
         from_attributes = True  # Lets Pydantic read SQLAlchemy model objects directly
 
 
-# ─────────────────────────────────────────────
-# AUTH SCHEMAS
-# ─────────────────────────────────────────────
-
 class LoginRequest(BaseModel):
     """Used when logging in (POST /auth/login)"""
     username: str
@@ -92,9 +72,6 @@ class TokenResponse(BaseModel):
     token_type:   str = "bearer"  # Standard JWT token type
 
 
-# ─────────────────────────────────────────────
-# ENQUIRY SCHEMAS
-# ─────────────────────────────────────────────
 
 class EnquiryCreate(BaseModel):
     """Used when submitting an enquiry (POST /enquiries)"""
