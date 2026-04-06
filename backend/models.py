@@ -1,13 +1,4 @@
-"""
-models.py — Database table definitions
 
-Each class here represents one table in the database.
-SQLAlchemy reads these classes and creates the actual tables for us.
-
-Think of each class as a blueprint for a table:
-  - Class name  = table name
-  - Each Column = one column in the table
-"""
 
 from sqlalchemy import Column, Integer, String, Float, Text, DateTime
 from sqlalchemy.sql import func
@@ -39,10 +30,7 @@ class Listing(Base):
 
 
 class User(Base):
-    """
-    The 'users' table — stores admin accounts.
-    For now there will only be one admin, but this scales to multiple.
-    """
+ 
     __tablename__ = "users"
 
     id              = Column(Integer, primary_key=True, index=True)
@@ -52,10 +40,7 @@ class User(Base):
 
 
 class Enquiry(Base):
-    """
-    The 'enquiries' table — stores messages submitted via the enquiry form.
-    Each row = one enquiry from a potential buyer.
-    """
+    
     __tablename__ = "enquiries"
 
     id         = Column(Integer, primary_key=True, index=True)
